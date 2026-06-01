@@ -9,76 +9,63 @@ export default function JobForm({ refreshJobs }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title || !description) {
-      alert("Title and Description required");
-      return;
-    }
-
     try {
-      const res = await API.post("/jobs", {
+      await API.post("/jobs", {
         title,
         description,
         skills: skills.split(",").map((s) => s.trim()),
       });
 
-      console.log("Job created:", res.data);
-
-      alert("Job created successfully");
-
       setTitle("");
       setDescription("");
       setSkills("");
 
-      refreshJobs();
+      refreshJobs && refreshJobs();
 
+      alert("Job Created");
     } catch (err) {
-      console.error("FULL ERROR:", err);
-
-      alert(
-        err.response?.data?.error ||
-        err.response?.data?.message ||
-        err.message ||
-        "Error creating job"
-      );
+      console.error(err);
+      alert(err.response?.data?.error || "Failed");
     }
   };
 
   return (
-    <div className="bg-white/30 backdrop-blur-lg p-5 rounded-xl shadow-lg">
-      <h2 className="text-xl font-semibold mb-4">
+    <div>
+      <h2 className="text-white text-xl mb-4">
         Create Job
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-3">
-
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4"
+      >
         <input
-          className="w-full border p-2 rounded"
+          className="w-full p-3 rounded-xl bg-white/10 text-white border border-white/20"
           placeholder="Job Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
 
         <textarea
-          className="w-full border p-2 rounded"
+          className="w-full p-3 rounded-xl bg-white/10 text-white border border-white/20"
           placeholder="Job Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
 
         <input
-          className="w-full border p-2 rounded"
-          placeholder="Skills (comma separated)"
+          className="w-full p-3 rounded-xl bg-white/10 text-white border border-white/20"
+          placeholder="React, Node, MongoDB"
           value={skills}
           onChange={(e) => setSkills(e.target.value)}
         />
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
+          className="w-full bg-indigo-600 text-white p-3 rounded-xl"
         >
           Create Job
         </button>
-
       </form>
     </div>
   );

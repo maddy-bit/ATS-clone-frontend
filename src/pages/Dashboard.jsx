@@ -1,40 +1,45 @@
-import { useEffect, useState } from "react";
-import API from "../services/api";
+import JobForm from "../components/JobForm";
+import ResumeUpload from "../components/ResumeUpload";
 import CandidateTable from "../components/CandidateTable";
-
+// import AnalyticsCard from "../components/AnalyticsCard";
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
+import StatsCards from "../components/StatsCards";
+import JobList from "../components/JobList";
 export default function Dashboard() {
-  const [jobs, setJobs] = useState([]);
-  const [jobId, setJobId] = useState("");
-  const [resumes, setResumes] = useState([]);
-
-  useEffect(() => {
-    API.get("/jobs").then((res) => setJobs(res.data));
-  }, []);
-
-  const fetchResumes = async (id) => {
-    const res = await API.get(`/resume/job/${id}`);
-    setResumes(res.data.resumes);
-  };
-
   return (
-    <div>
-      <h2>Dashboard</h2>
+    <div className="flex min-h-screen overflow-hidden">
+      <Sidebar />
 
-      <select
-        onChange={(e) => {
-          setJobId(e.target.value);
-          fetchResumes(e.target.value);
-        }}
-      >
-        <option>Select Job</option>
-        {jobs.map((job) => (
-          <option key={job._id} value={job._id}>
-            {job.title}
-          </option>
-        ))}
-      </select>
+      <div className="flex-1 p-6">
+        <Navbar />
 
-      <CandidateTable resumes={resumes} />
+        <div className="mt-6">
+          <StatsCards />
+        </div>
+
+        <div className="grid lg:grid-cols-2 grid-cols-1 gap-6 mt-6">
+          <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6">
+            <JobForm />
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6">
+            <ResumeUpload />
+          </div>
+        </div>
+
+        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 mt-6">
+          <CandidateTable />
+        </div>
+        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 mt-6">
+          <JobList />
+        </div>
+
+        {/* <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 mt-6">
+          
+        <AnalyticsCard />
+        </div> */}
+      </div>
     </div>
   );
 }
